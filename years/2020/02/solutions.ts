@@ -7,7 +7,7 @@ export const part1 = (input: string[]) => {
       return accumulator
     }, 0)
 
-    if(stringMatchCount >= parseInt(atLeast) && stringMatchCount <= parseInt(atMost)) {
+    if (stringMatchCount >= parseInt(atLeast) && stringMatchCount <= parseInt(atMost)) {
       return true
     }
 
@@ -21,12 +21,14 @@ export const part2 = (input: string[]) => {
   const matches = input.filter((policy: string) => {
     const [position1, position2, password, stringToMatch] = regex_match(policy)
 
-    if(
-      (password.split('')[parseInt(position1)-1] == stringToMatch && password.split('')[parseInt(position2)-1] != stringToMatch) ||
-      (password.split('')[parseInt(position1)-1] != stringToMatch && password.split('')[parseInt(position2)-1] == stringToMatch)
-     ) {
-       return true
-     }
+    if (
+      (password.split('')[parseInt(position1) - 1] == stringToMatch &&
+        password.split('')[parseInt(position2) - 1] != stringToMatch) ||
+      (password.split('')[parseInt(position1) - 1] != stringToMatch &&
+        password.split('')[parseInt(position2) - 1] == stringToMatch)
+    ) {
+      return true
+    }
 
     return false
   })
