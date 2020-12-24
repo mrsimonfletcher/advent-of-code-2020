@@ -1,4 +1,4 @@
-export const part1 = (input: string[]) => {
+export const part1Matches = (input: string[]) => {
   const matches = input.filter((policy: string) => {
     const [atLeast, atMost, password, stringToMatch] = regex_match(policy)
 
@@ -14,10 +14,10 @@ export const part1 = (input: string[]) => {
     return false
   })
 
-  return matches.length
+  return matches
 }
 
-export const part2 = (input: string[]) => {
+export const part2Matches = (input: string[]) => {
   const matches = input.filter((policy: string) => {
     const [position1, position2, password, stringToMatch] = regex_match(policy)
 
@@ -33,7 +33,7 @@ export const part2 = (input: string[]) => {
     return false
   })
 
-  return matches.length
+  return matches
 }
 
 function regex_match(policy: string) {
