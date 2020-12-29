@@ -1,53 +1,53 @@
 import { range } from '../../../utils/helpers'
 
+type Move = {
+  east: number
+  south: number
+}
+
 class Grid {
-  private input: string[]
   private grid: string[][]
-  private currentPosition: number[]
+  private x: number
+  private y: number
 
-  constructor(input: string[], currentPosition: number[] = [0, 0]) {
-    this.input = input
-    this.currentPosition = currentPosition
-    this.grid = this.input.map(row => row.split(''))
-  }
-
-  // Wrap grid will essentially build the right side again if the position exceeds the current grid
-  wrapGrid() {
-    this.grid = this.grid.map((val, index) => val.concat(val))
+  constructor(input: string[]) {
+    this.x = 0
+    this.y = 0
+    this.grid = input.map(row => row.split(''))
   }
 
   currentValue() {
     // If we have got to the bottom of the grid, we no longer care.
-    if (!this.grid[this.currentPosition[0]]) {
+    if (!this.grid[this.x]) {
       return null
     }
 
-    // If the current positing overlaps the right of the grid, we need to build the right side of the grid
-    if (this.grid[this.currentPosition[0]] && !this.grid[this.currentPosition[0]][this.currentPosition[1]]) {
-      this.wrapGrid()
+    // If the current positioning overlaps the right of the grid, we need to build the right side of the grid
+    if (this.grid[this.x] && !this.grid[this.x][this.y]) {
+      this.grid = this.grid.map((val, index) => val.concat(val))
     }
 
-    return this.grid[this.currentPosition[0]][this.currentPosition[1]]
+    return this.grid[this.x][this.y]
   }
 
   north(num: number) {
-    this.currentPosition = [this.currentPosition[0] - num, this.currentPosition[1]]
+    this.x -= num
   }
 
   east(num: number) {
-    this.currentPosition = [this.currentPosition[0], this.currentPosition[1] + num]
+    this.y += num
   }
 
   south(num: number) {
-    this.currentPosition = [this.currentPosition[0] + num, this.currentPosition[1]]
+    this.x += num
   }
 
   west(num: number) {
-    this.currentPosition = [this.currentPosition[0], this.currentPosition[1] - num]
+    this.y -= num
   }
 }
 
-const performSequence = (input: string[], moves: { east: number; south: number }[]) => {
+const performSequence = (input: string[], moves: Move[]) => {
   return moves.map(({ east, south }) => {
     const grid = new Grid(input)
 
@@ -78,5 +78,5 @@ export const part2 = (input: string[]) => {
 
   const slopes = performSequence(input, moves)
 
-  return slopes.map(val => val.filter(x => x === 'X').length).reduce((a, b) => a * b, 1)
+  return slopes.map(slope => slope.filter(val => val === 'X').length).reduce((a, b) => a * b, 1)
 }
