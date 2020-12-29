@@ -4,7 +4,9 @@
   "description": "🎄 Advent of code through the years 🎅",
   "main": "index.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "tsc": "tsc",
+    "prettier": "prettier --check ."
   },
   "repository": {
     "type": "git",
