@@ -9,6 +9,10 @@ export const input = (file_path: string, pop: Boolean = true, split: RegExp = /\
   return array
 }
 
+export const range = (start: number, end: number) => {
+  return Array.from({ length: end - start + 1 }, (_, i) => i)
+}
+
 export const combinations = (set: number[], k: number): number[][] => {
   if (k > set.length) {
     return []
