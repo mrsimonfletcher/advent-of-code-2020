@@ -1,12 +1,16 @@
 import * as fs from 'fs'
 
-export const input = (file_path: string): string[] => {
-  const array = fs.readFileSync(file_path).toString().split(/\n/)
+export const input = (file_path: string, pop: Boolean = true, split: RegExp = /\n/): string[] => {
+  const array = fs.readFileSync(file_path).toString().split(split)
 
   // Remove the last element from array which is always empty.
-  array.pop()
+  if (pop) array.pop()
 
   return array
+}
+
+export const range = (start: number, end: number) => {
+  return Array.from({ length: end - start + 1 }, (_, i) => i)
 }
 
 export const combinations = (set: number[], k: number): number[][] => {
