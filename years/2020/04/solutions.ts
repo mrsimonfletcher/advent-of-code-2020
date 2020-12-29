@@ -1,25 +1,16 @@
 export const part1 = (input: string[]) => {
-  return input.filter(val => {
-    const passwordObj = passwordObject(val)
-
-    if (!passwordHasValidKeys(passwordObj)) {
-      return false
-    }
-
-    return true
-  }).length
+  return input.filter(val => passportHasValidKeys(passportObject(val))).length
 }
 
 export const part2 = (input: string[]) => {
   return input.filter(val => {
-    const passwordObj = passwordObject(val)
+    const passportObj = passportObject(val)
 
-    if (!passwordHasValidKeys(passwordObj)) {
+    if (!passportHasValidKeys(passportObj)) {
       return false
     }
 
-    return Object.keys(passwordObj).every(key => {
-      const value = passwordObj[key]
+    return Object.entries(passportObj).every(([key, value]) => {
       switch (key) {
         case 'byr':
           return valueBetween(value, 1920, 2002)
@@ -28,8 +19,7 @@ export const part2 = (input: string[]) => {
         case 'eyr':
           return valueBetween(value, 2020, 2030)
         case 'hgt':
-          const measurement = value.substr(-2)
-          const length = value.slice(0, value.length - 2)
+          const [length, measurement] = [value.slice(0, -2), value.slice(-2)]
           if (measurement == 'cm') {
             return valueBetween(length, 150, 193)
           } else if (measurement == 'in') {
@@ -42,7 +32,7 @@ export const part2 = (input: string[]) => {
           return ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'].includes(value)
         case 'pid':
           return /^(\d{9})$/.test(value)
-        case 'cid':
+        default:
           return true
       }
     })
@@ -53,23 +43,23 @@ const valueBetween = (value: string, a: number, b: number) => {
   return Number(value) >= a && Number(value) <= b
 }
 
-type PasswordObj = {
+type passportObj = {
   [key: string]: string
 }
 
-const requireFields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
-const passwordHasValidKeys = (hash: PasswordObj) => {
+const passportHasValidKeys = (hash: passportObj) => {
+  const requireFields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
   return requireFields.every(key => Object.keys(hash).includes(key))
 }
 
-const passwordObject = (input: string) => {
+const passportObject = (input: string) => {
   return input
     .split('\n')
     .join(' ')
     .split(' ')
-    .filter(val => val != '')
-    .reduce((passwordObj: PasswordObj, currentValue: string) => {
+    .filter(val => val !== '')
+    .reduce((passportObj: passportObj, currentValue: string) => {
       const [key, val] = currentValue.split(':')
-      return { ...passwordObj, [key]: val }
+      return { ...passportObj, [key]: val }
     }, {})
 }
