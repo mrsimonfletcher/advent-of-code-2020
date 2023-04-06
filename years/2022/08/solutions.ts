@@ -1,27 +1,35 @@
 export const part1 = (input: string[]) => {
   const forrest = input.reduce((acc: number[][], value) => [...acc, value.split('').map(v => Number(v))], [])
+  const innerLength = forrest[0].length - 1
 
   const initialExposedCount = forrest.length * 2 + forrest[0].length * 2 - 4
-  let additionalExposed = 0
 
-  for (let yindex = 1; yindex < forrest.length - 1; yindex++) {
-    for (let xindex = 1; xindex < forrest[0].length - 1; xindex++) {
-      additionalExposed += exposed(forrest, xindex, yindex) ? 1 : 0
-    }
-  }
+  const additionalExposed = forrest.reduce((acc, _, yindex) => {
+    if (yindex == 0 || yindex == forrest.length) return acc
+    Array.from(Array(innerLength)).forEach((_, xindex) => {
+      if (xindex == 0 || yindex == innerLength) return acc
+      acc += exposed(forrest, xindex, yindex) ? 1 : 0
+    })
+    return acc
+  }, 0)
 
   return initialExposedCount + additionalExposed
 }
 export const part2 = (input: string[]) => {
   const forrest = input.reduce((acc: number[][], value) => [...acc, value.split('').map(v => Number(v))], [])
+  const innerLength = forrest[0].length - 1
 
-  let highestScenicScore = 0
-  for (let yindex = 1; yindex < forrest.length - 1; yindex++) {
-    for (let xindex = 1; xindex < forrest[0].length - 1; xindex++) {
+  const highestScenicScore = forrest.reduce((acc, _, yindex) => {
+    if (yindex == 0 || yindex == forrest.length) return acc
+
+    Array.from(Array(innerLength)).forEach((_, xindex) => {
+      if (xindex == 0 || yindex == innerLength) return acc
+
       const score = scenicScore(forrest, xindex, yindex)
-      if (score > highestScenicScore) highestScenicScore = score
-    }
-  }
+      if (score > acc) acc = score
+    })
+    return acc
+  }, 0)
 
   return highestScenicScore
 }
@@ -39,16 +47,25 @@ const scenicScore = (forrest: number[][], xcordinate: number, ycordinate: number
   const currentHeight = Number(forrest[ycordinate][xcordinate])
   let [leftSide, rightSide, top, bottom] = sides(forrest, xcordinate, ycordinate)
 
-  const enumerator = (side: number[]) => {
-    let c = 0
-    for (let i = 0; i < side.length; i++) {
-      c += 1
-      if (Number(side[i]) >= currentHeight) break
+  const countValuesAboveHeight = (values: number[]): number => {
+    let count = 0
+    for (const value of values) {
+      if (value >= currentHeight) {
+        count++
+        break
+      } else {
+        count++
+      }
     }
-    return c
+    return count
   }
 
-  return enumerator(leftSide.reverse()) * enumerator(rightSide) * enumerator(top.reverse()) * enumerator(bottom)
+  return (
+    countValuesAboveHeight(leftSide.reverse()) *
+    countValuesAboveHeight(rightSide) *
+    countValuesAboveHeight(top.reverse()) *
+    countValuesAboveHeight(bottom)
+  )
 }
 
 const sides = (forrest: number[][], xcordinate: number, ycordinate: number) => {
